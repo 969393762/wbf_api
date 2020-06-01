@@ -7,6 +7,12 @@ import time
 import requests
 import hashlib
 import datetime
+ROOT_URL = "https://openapi.wbf.info"
+"""
+# In case of the url above is blocked use following instead:
+ROOT_URL = "https://openapi.wbf.live"
+"""
+
 class WBFRest:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
@@ -22,12 +28,12 @@ class WBFRest:
         return sign
 
     def get_ohlcv_data(self, symbol, timeframe=1):
-        url="https://openapi.wbf.info/open/api/get_records"
+        url="{}/open/api/get_records".format(ROOT_URL)
         r=requests.get(url,params={'symbol':self.symbol(symbol),'period':timeframe})
         return r.json()['data']
 
     def get_ticker_data(self, symbol):
-        url="https://openapi.wbf.info/open/api/get_ticker"
+        url="{}/open/api/get_ticker".format(ROOT_URL)
         r=requests.get(url,params={'symbol':self.symbol(symbol)})
         response = r.json()['data']
         result = {
@@ -44,7 +50,7 @@ class WBFRest:
         return result
 
     def get_depth_data(self, symbol):
-        url="https://openapi.wbf.info/open/api/market_dept"
+        url="{}/open/api/market_dept".format(ROOT_URL)
         r=requests.get(url,params={'symbol':self.symbol(symbol),'type':'step0'})
         response=r.json()['data']['tick']
         response['symbol']=symbol
@@ -53,7 +59,7 @@ class WBFRest:
         return response
 
     def get_balance(self):
-        url="https://openapi.wbf.info/open/api/user/account"
+        url="{}/open/api/user/account".format(ROOT_URL)
         dic={'api_key':self.api_key,'time':time.time()}
         dic['sign']=self.sign(dic)
         r=requests.get(url,params=dic)
@@ -70,7 +76,7 @@ class WBFRest:
         return returndic
 
     def limit_place_buy_order(self, symbol, price, amount):
-        url="https://openapi.wbf.info/open/api/create_order"
+        url="{}/open/api/create_order".format(ROOT_URL)
         
         params = {
             'api_key':self.api_key,
@@ -98,7 +104,7 @@ class WBFRest:
                 raise "place order failed : {}".format(jsonstr['msg'])
 
     def limit_place_sell_order(self, symbol, price, amount):
-        url="https://openapi.wbf.info/open/api/create_order"
+        url="{}/open/api/create_order".format(ROOT_URL)
         
         params = {
             'api_key':self.api_key,
@@ -297,7 +303,7 @@ class WBFRest:
     def get_order_msg_byid(self, symbol, order_id):
         response = ''
         try:
-            url = "https://openapi.wbf.info/open/api/order_info"
+            url = "{}/open/api/order_info".format(ROOT_URL)
 
             params = {
                 'api_key': self.api_key,
@@ -322,7 +328,7 @@ class WBFRest:
             self.client_normal=False
             raise requests.exceptions.HTTPError
     def cancel_order_byid(self, symbol, order_id):
-        url="https://openapi.wbf.info/open/api/cancel_order"
+        url="{}/open/api/cancel_order".format(ROOT_URL)
 
         params = {
             'api_key':self.api_key,
@@ -346,7 +352,7 @@ class WBFRest:
         if 'code' in response and int(response['code'])==8:
             raise response['msg']
     def get_open_orders_bysymbol(self, symbol):
-        url="https://openapi.wbf.info/open/api/v2/new_order"
+        url="{}/open/api/v2/new_order".format(ROOT_URL)
         
         params = {
             'api_key':self.api_key,
@@ -374,7 +380,7 @@ class WBFRest:
             ordermsg['msg'] = None
         return ordermsg
     def cancel_open_orders_bysymbol(self, symbol):
-        url="https://openapi.wbf.info/open/api/cancel_order_all"
+        url="{}/open/api/cancel_order_all".format(ROOT_URL)
         
         params = {
             'api_key':self.api_key,
@@ -395,7 +401,7 @@ class WBFRest:
         return r.text
 
     def get_all_trades_bysymbol(self, symbol, startDate=None, endDate=None):
-        url = "https://openapi.wbf.info/open/api/all_trade"
+        url = "{}/open/api/all_trade".format(ROOT_URL)
         params = {
             'api_key': self.api_key,
             'time': int(1000 * time.time()),
