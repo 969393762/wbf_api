@@ -52,5 +52,3 @@
 1.  ##### wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])
      ##### wbf_ws.start()
      * spot_symbol:需要接收数据的交易对名称。例如:ws_symbol=['BTC/USDT','ETH/USDT']
-     
- 
