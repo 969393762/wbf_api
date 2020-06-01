@@ -1,7 +1,8 @@
-# wbf_api
-## wbf_rest.py
-## 文件内 WBFRest 类包含rest 公共接口和私有接口。公共接口不需要apikey 和 secretkey 即可调用，私有接口需要申请apikey， wbf 交易所官方网站 https://www.wbf.live/ 。
-## 所有接口参考ccxt 格式封装，入参 symbol 格式 BTC/USDT 
+# WBFex Quantative Trading APIs/SDK
+## RESTful APIs
+文件内 WBFRest 类包含rest 公共接口和私有接口。公共接口不需要apikey 和 secretkey 即可调用，私有接口需要申请apikey， wbf 交易所官方网站 https://www.wbf.live/ 。
+
+(注：所有接口参考ccxt 格式封装，入参 symbol 格式 BTC/USDT)
 ### 公共数据访问接口
 1.  get_ohlcv_data(self, symbol, timeframe=1)
      * 获取指定交易对 k线数据, timeframe k线时间，1为1m 
@@ -46,9 +47,10 @@
      * startDate: 查询起始时间 ，比如：2020-06-01 18:32:27
      * endDate: 查询结束时间
      
-## wbf_ws.py
-## wbf websocket 行情接收，.py文件内以接收深度和最新成交数据。
+## Websocket API
+目前支持：接收深度和最新成交。
 ### 调用方法
-1.  ##### wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])
-     ##### wbf_ws.start()
-     * spot_symbol:需要接收数据的交易对名称。例如:ws_symbol=['BTC/USDT','ETH/USDT']
+1.  ```wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])```
+
+    ```wbf_ws.start()```
+     * ws_symbol:需要接收数据的交易对名称。例如:ws_symbol=['BTC/USDT','ETH/USDT']
