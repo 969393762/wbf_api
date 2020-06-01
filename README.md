@@ -50,7 +50,7 @@
 ## Websocket API
 目前支持：接收深度和最新成交。
 ### 调用方法
-1.  ```wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])```
+1. ws_symbol:需要接收数据的交易对名称。例如:ws_symbol=['BTC/USDT','ETH/USDT']
 
-    ```wbf_ws.start()```
-     * ws_symbol:需要接收数据的交易对名称。例如:ws_symbol=['BTC/USDT','ETH/USDT']
+```wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])```<br>
+```wbf_ws.start()```
