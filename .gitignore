@@ -22,7 +22,7 @@ build/
 *.ipr
 *.iml
 *.iws
-
+*.xml
 # temp file
 *.log
 *.cache
