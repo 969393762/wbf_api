@@ -1,0 +1,31 @@
+#python
+*.class
+
+
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+#maven ignore
+target/
+build/
+
+
+.settings/
+.project
+.classpatch
+
+#Intellij idea
+.idea/
+/idea/
+*.ipr
+*.iml
+*.iws
+
+# temp file
+*.log
+*.cache
+*.diff
+*.patch
+*.tmp
