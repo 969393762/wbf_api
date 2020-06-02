@@ -8,7 +8,8 @@ from websocket import create_connection
 import datetime
 import gzip
 import copy
-class WBFWs(threading.Thread):
+
+class WBFExWebsocket(threading.Thread):
     def __init__(self, update_data, **kwags):
         self.last_update = time.time()
 
@@ -151,5 +152,5 @@ def fun(name, data):
     print('receive data----------- ', name, data)
 
 
-wbf_ws = WBFWs(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])
+wbf_ws = WBFExWebsocket(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])
 wbf_ws.start()
