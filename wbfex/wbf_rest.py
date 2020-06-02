@@ -13,7 +13,7 @@ ROOT_URL = "https://openapi.wbf.info"
 ROOT_URL = "https://openapi.wbf.live"
 """
 
-class WBFRest:
+class WBFExRest:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
@@ -422,3 +422,8 @@ class WBFRest:
         s = '?' + s
         r = requests.get(url + s)
         return r.json()
+
+
+if __name__ == '__main__':
+    ak, sk = '',''
+    ex = WBFExRest(ak, sk)
