@@ -29,3 +29,5 @@ build/
 *.diff
 *.patch
 *.tmp
+
+Pipfile.lock
