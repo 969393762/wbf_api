@@ -9,11 +9,14 @@ import datetime
 import gzip
 import copy
 
+WS_URL = "wss://ws.wbf.live/kline-api/ws"
+
 class WBFExWebsocket(threading.Thread):
-    def __init__(self, update_data, **kwags):
+    def __init__(self, on_update_trade, on_update_depth, **kwags):
         self.last_update = time.time()
 
-        self.update_data = update_data
+        self.on_update_trade = on_update_trade
+        self.on_update_depth = on_update_depth
         if 'ws_symbol' in kwags:
             ws_symbol = copy.deepcopy(kwags['ws_symbol'])
         else:
@@ -38,7 +41,7 @@ class WBFExWebsocket(threading.Thread):
     def _connect(self):
         for i in range(50):
             try:
-                ws = create_connection("wss://ws.wbf.live/kline-api/ws")
+                ws = create_connection(WS_URL)
             except Exception as e:
                 print('connect error',e)
                 pass
@@ -99,7 +102,7 @@ class WBFExWebsocket(threading.Thread):
                         _update_data['asks'].sort()
                         _update_data['datetime'] = datetime.datetime.utcfromtimestamp(message['ts'] / 1000).isoformat()
                         _update_data['data_type'] = 'depth'
-                        self.update_data(channel, _update_data)
+                        self.on_update_depth(channel, _update_data)
                     if channel.split('_')[-2] == 'trade':
                         _update_data = []
                         symbol = self.symbol_dic[channel.split('_')[1]]
@@ -116,13 +119,14 @@ class WBFExWebsocket(threading.Thread):
                             _trade_data['data_type'] = 'trade'
                             _trade_data['exchange'] = 'wbf'
                             _update_data.append(_trade_data)
-                        self.update_data(channel, _update_data)
+                        self.on_update_trade(channel, _update_data)
 
 
     def _subscribe(self):
         for symbol in self.ws_symbol:
             symbol_i = symbol.replace('/','').lower()
-            print(json.dumps({"event": "sub","params":{"channel":"market_"+symbol_i+"_depth_step0","top":150}}))
+            #rdata = json.dumps({"event": "sub","params":{"channel":"market_"+symbol_i+"_depth_step0","top":150}})
+            #print(rdata)
             self.send_message(json.dumps({"event": "sub","params":{"channel":"market_"+symbol_i+"_depth_step0","top":150}}))
             self.send_message(json.dumps({"event": "sub","params":{"channel":"market_"+symbol_i+"_trade_ticker"}}))
 
@@ -138,8 +142,8 @@ class WBFExWebsocket(threading.Thread):
         except Exception as e:
             print('订阅失败！',e)
             t = 0
-        while (t):
 
+        while t:
             try:
                 self._receive()
             except Exception as e:
@@ -148,9 +152,14 @@ class WBFExWebsocket(threading.Thread):
 
 
 
-def fun(name, data):
-    print('receive data----------- ', name, data)
+def handle_simple(channel, data):
+    if 'depth' in channel:
+        print( data['symbol'], 'bid1:{}, ask1:{}'.format(data['bids'][0], data['asks'][0]) )
+    elif 'trade' in channel:
+        for d in data:
+            di = d['info']
+            print(d['timestamp'], di['side'], d['symbol'], di['price'], di['vol'], di['amount'])
 
 
-wbf_ws = WBFExWebsocket(update_data=fun, ws_symbol=['BTC/USDT','ETH/USDT'])
+wbf_ws = WBFExWebsocket(on_update_trade=handle_simple, on_update_depth=handle_simple, ws_symbol=['BTC/USDT','ETH/USDT'])
 wbf_ws.start()
