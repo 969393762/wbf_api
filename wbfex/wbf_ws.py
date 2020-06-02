@@ -10,6 +10,10 @@ import gzip
 import copy
 
 WS_URL = "wss://ws.wbf.live/kline-api/ws"
+"""
+# another possible url
+WS_URL = "wss://ws.wbf.info/kline-api/ws"
+"""
 
 class WBFExWebsocket(threading.Thread):
     def __init__(self, on_update_trade, on_update_depth, **kwags):
@@ -150,16 +154,20 @@ class WBFExWebsocket(threading.Thread):
                 print('处理收到的消息失败',e)
                 break
 
-
-
+"""""""""""""""""""""""""""""""""
+Trade|Depth Data Handler
+"""""""""""""""""""""""""""""""""
 def handle_simple(channel, data):
     if 'depth' in channel:
         print( data['symbol'], 'bid1:{}, ask1:{}'.format(data['bids'][0], data['asks'][0]) )
     elif 'trade' in channel:
         for d in data:
             di = d['info']
-            print(d['timestamp'], di['side'], d['symbol'], di['price'], di['vol'], di['amount'])
+            print( '[trade]', datetime.datetime.fromtimestamp( float(d['timestamp'])/1000), di['side'], d['symbol'], di['price'], di['vol'], di['amount'])
 
-
-wbf_ws = WBFExWebsocket(on_update_trade=handle_simple, on_update_depth=handle_simple, ws_symbol=['BTC/USDT','ETH/USDT'])
-wbf_ws.start()
+"""""""""""""""""""""""""""""""""
+Trail run
+"""""""""""""""""""""""""""""""""
+if __name__ == '__main__':
+    wbf_ws = WBFExWebsocket(on_update_trade=handle_simple, on_update_depth=handle_simple, ws_symbol=['BTC/USDT','ETH/USDT'])
+    wbf_ws.start()
