@@ -427,3 +427,6 @@ class WBFExRest:
 if __name__ == '__main__':
     ak, sk = '',''
     ex = WBFExRest(ak, sk)
+    balance = ex.get_balance()
+    print(balance)
+    
