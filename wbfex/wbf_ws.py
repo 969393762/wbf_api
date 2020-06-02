@@ -111,7 +111,7 @@ class WBFExWebsocket(threading.Thread):
                             _trade_data['rec_timestamp'] = _receive_timestamp * 1000
                             _trade_data['info'] = key
                             _trade_data['price'] = key['price']
-                            _trade_data['amount'] = key['amount']
+                            _trade_data['amount'] = key['vol']
                             _trade_data['side'] = key['side'].lower()
                             _trade_data['data_type'] = 'trade'
                             _trade_data['exchange'] = 'wbf'
