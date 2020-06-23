@@ -28,17 +28,19 @@ def price_control_rise(channel,data):
         asks = data['asks']
         if trade_price >0:
             if RISE_FACTOR:
-                sub_asks = filter(lambda e:float(e[0])<trade_price*(1+float(RISE_FACTOR)/100), asks)
+                price_cap = trade_price*(1+float(RISE_FACTOR)/100)
             elif RISE_PRICE_CAP:
-                sub_asks = filter(lambda e:float(e[0])<float(RISE_PRICE_CAP), asks)
+                price_cap = float(RISE_PRICE_CAP)
             else:
                 pass
+            sub_asks = filter(lambda e:float(e[0])< price_cap, asks )
+
             sub_asks = map(lambda e: [float(e[0]), float(e[1])], sub_asks )
             t, v = 0,0
             for e in sub_asks:
                 t += e[0]*e[1]
                 v += e[1]
-            print( t, trade_price*(1+factor) )
+            print( t, price_cap )
 
     elif 'trade' in channel:
         for d in data:
