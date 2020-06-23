@@ -33,14 +33,14 @@ def price_control_rise(channel,data):
                 price_cap = float(RISE_PRICE_CAP)
             else:
                 pass
-            sub_asks = filter(lambda e:float(e[0])< price_cap, asks )
+            sub_asks = filter(lambda e:float(e[0])<= price_cap, asks )
 
             sub_asks = map(lambda e: [float(e[0]), float(e[1])], sub_asks )
             t, v = 0,0
             for e in sub_asks:
                 t += e[0]*e[1]
                 v += e[1]
-            print( t, price_cap )
+            print( f'cost: {t}u to pull up to ${price_cap}' )
 
     elif 'trade' in channel:
         for d in data:
