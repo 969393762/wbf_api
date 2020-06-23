@@ -40,7 +40,7 @@ def price_control_rise(channel,data):
             for e in sub_asks:
                 t += e[0]*e[1]
                 v += e[1]
-            print( f'cost: {t}u to pull up to ${price_cap}' )
+            print( f'cost: {t}u to pull up to ${price_cap} {(price_cap-trade_price)/trade_price*100}%' )
 
     elif 'trade' in channel:
         for d in data:
