@@ -18,8 +18,11 @@ class WBFExRest:
     def __init__(self, api_key, api_secret):
         self.api_key = api_key
         self.api_secret = api_secret
-    def symbol(self,symbol):
+        
+    @classmethod
+    def symbol(cls,symbol):
         return symbol.replace('/','').lower()
+    
     def sign(self,dic):
         tmp=''
         for key in sorted(dic.keys()):
@@ -28,31 +31,42 @@ class WBFExRest:
         sign=hashlib.md5(tmp.encode()).hexdigest()
         return sign
 
-    def get_ohlcv_data(self, symbol, timeframe=1):
+    @classmethod
+    def get_ohlcv_data(cls, symbol, timeframe=1):
+        """
+        @brief Fetch a list of OHLCV, with timestamp.
+        @param symbol (string): BTC/USDT, or alike
+        @param timeframe (int): Number of cycle of fetching OHLCV. Minimum is 1, meaning 1minute or 60seconds.
+        @return List of lists [ [ts,open,high,low,close,volume], ... ]. By default, containing maximum 300 elements.
+        """
         url="{}/open/api/get_records".format(ROOT_URL)
-        r=requests.get(url,params={'symbol':self.symbol(symbol),'period':timeframe})
+        r=requests.get(url,params={'symbol':WBFExRest.symbol(symbol),'period':timeframe})
         return r.json()['data']
 
-    def get_ticker_data(self, symbol):
+    @classmethod
+    def get_ticker_data(cls, symbol):
+        """
+        @brief Get the current trade data.
+        @param symbol (string): BTC/USDT, or alike
+        @return Dict. Containing following keys:
+                ask,bid,price,amount,symbol
+        """
         url="{}/open/api/get_ticker".format(ROOT_URL)
-        r=requests.get(url,params={'symbol':self.symbol(symbol)})
+        r=requests.get(url,params={'symbol':WBFExRest.symbol(symbol)})
         response = r.json()['data']
         result = {
             'ask': response['sell'],
             'bid': response['buy'],
-            'close': response['last'],
-            'high': 0,
-            'low': 0,
-            'last': response['last'],
             'price': response['last'],
             'amount': response['vol'],
             'symbol':symbol
         }
         return result
 
-    def get_depth_data(self, symbol):
+    @classmethod
+    def get_depth_data(cls, symbol):
         url="{}/open/api/market_dept".format(ROOT_URL)
-        r=requests.get(url,params={'symbol':self.symbol(symbol),'type':'step0'})
+        r=requests.get(url,params={'symbol':WBFExRest.symbol(symbol),'type':'step0'})
         response=r.json()['data']['tick']
         response['symbol']=symbol
         response['symbol_name'] = symbol
@@ -82,7 +96,7 @@ class WBFExRest:
         params = {
             'api_key':self.api_key,
             'time':time.time(),
-            'symbol':self.symbol(symbol),
+            'symbol':WBFExRest.symbol(symbol),
             'side':'BUY',
             'type':1,
             'volume':amount,
