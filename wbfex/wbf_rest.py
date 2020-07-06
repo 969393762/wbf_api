@@ -7,7 +7,8 @@ import time
 import requests
 import hashlib
 import datetime
-ROOT_URL = "https://openapi.wbf.info"
+ROOT_URL = "https://openapi.wbf.live"
+
 """
 # In case of the url above is blocked use following instead:
 ROOT_URL = "https://openapi.wbf.live"
