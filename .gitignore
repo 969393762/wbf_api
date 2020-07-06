@@ -31,3 +31,6 @@ build/
 *.tmp
 
 Pipfile.lock
+
+**/__pycache__
+.pydevproject

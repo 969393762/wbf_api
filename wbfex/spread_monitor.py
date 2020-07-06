@@ -1,6 +1,5 @@
 import click
 import datetime
-from configure_symbols import symbols
 from wbf_ws import WBFExWebsocket
 from functools import reduce
 
