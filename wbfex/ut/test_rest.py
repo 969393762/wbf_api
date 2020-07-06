@@ -40,7 +40,7 @@ class Test(unittest.TestCase):
         self.assertEqual(ts1-ts0, 3600, "1-hour candlestick lines should have a gap of 3600 seconds, or 1 hour.")
         
     def test_ticker_data(self):
-        self.ticker = self.rest.get_ticker_data(self.symbol)
+        self.ticker = WBFExRest.get_ticker_data(self.symbol)
         self.assertTrue( all(map(lambda s: s in self.ticker.keys(),['ask','bid', 'price','amount','symbol'] )), 'Missing keys in the return values.')
         
         bid,ask = self.ticker['bid'], self.ticker['ask']
