@@ -3,6 +3,9 @@ import datetime
 from wbf_ws import WBFExWebsocket
 from functools import reduce
 
+def _f( float_v):
+    return int(float_v*100)/100
+
 """""""""""""""""""""""""""""""""
 Trade|Depth Data Handler
 """""""""""""""""""""""""""""""""
@@ -13,6 +16,34 @@ def handle_simple(channel, data):
         for d in data:
             di = d['info']
             print( '[trade]', datetime.datetime.fromtimestamp( float(d['timestamp'])/1000), di['side'], d['symbol'], di['price'], di['vol'], di['amount'])
+
+def depth_stat(channel, data):
+    if 'depth' in channel:
+        a,b = data['asks'],data['bids']
+        md = float(a[0][0])*.5 + float(b[0][0])*.5
+
+        pct = 10
+        md_up = md*(1+pct/100)
+        md_down = md*(1-pct/100)
+
+        amt,vol=0,0
+        for e in a:
+            if float(e[0])< md_up:
+                amt += e[1]
+                vol += e[0]*e[1]
+            else: break
+        ask_pct = (amt,vol)
+
+        amt,vol=0,0
+        for e in b:
+            if float(e[0])>md_down:
+                amt += e[1]
+                vol += e[0]*e[1]
+            else: break
+        bid_pct = (amt,vol)
+
+        print(f'[depth {pct/100}] amt:{_f(ask_pct[0]),_f(bid_pct[0]),_f(ask_pct[0]+bid_pct[0])}    vol:{_f(ask_pct[1]),_f(bid_pct[1]),_f(ask_pct[1]+bid_pct[1])}')
+
 
 RISE_PRICE_CAP=-1
 RISE_FACTOR=-1
@@ -54,10 +85,11 @@ def main(symbols, rise_cap, rise_factor):
     RISE_PRICE_CAP = rise_cap
     RISE_FACTOR = rise_factor
     wbf_ws = WBFExWebsocket(
-            on_update_trade=price_control_rise, #handle_simple, 
-            on_update_depth=price_control_rise, #handle_simple, 
+            on_update_trade=depth_stat, #price_control_rise, #handle_simple,
+            on_update_depth=depth_stat, #price_control_rise, #handle_simple,
             ws_symbol=symbols.split(','))
     wbf_ws.start()
 
 if __name__ == '__main__':
     main()
+
